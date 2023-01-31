@@ -31,7 +31,8 @@
     #PER : TIMES TEAM LOST
     #G.F : GOALS TEAM MARKED
     #G.S : GOALS MARKED ON TEAM
-    #+/- : ~~~~~~~~~~~~~~~~~~~~ 
+    #+/- : The difference between the goals scored and the goals scored on this team. 
+
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $PTSM = $PTSCE = $PTSB = $PTSCA = 0;
     $GANM = $GANCE = $GANB = $GANCA = 0;
@@ -42,6 +43,7 @@
     $PMM = $PMCE = $PMB = $PMCA = 0;
     
 
+    #inputs validation. 
 
     if($_POST['matchmorocco1'] == 0 && $_POST['matchcroatia1'] == 0 || $_POST['matchmorocco1'] < 0 || $_POST['matchcroatia1'] < 0 ){
         echo '<script>alert("Notes: \n  - Goals can not be less than 0!  \n  - You can not let two inputs empty!")</script>'; 
@@ -58,7 +60,8 @@
     }
     else{
 
-     
+        #calcuating points. 
+
         if($_REQUEST['matchmorocco1'] > $_REQUEST['matchcroatia1']){
             $PTSM += 3;
             $GANM += 1;
@@ -225,57 +228,31 @@
         }
 
     }
-/*
-    #Calculating all played matches = 3 matches !
 
-    #Sort Teams According to their values
-    $sortteams = array('MOROCCO' => $PTSM , 'CROATIA' => $PTSCE, 'BELGIUM' => $PTSB, 'CANADA' => $PTSCA);
-    arsort($sortteams);
-
-    #Calculating MATCHES THAT TEAM ==WON== !
-    $sortgoals = array('MOROCCO' => $GANM , 'CROATIA' => $GANCE, 'BELGIUM' => $GANB, 'CANADA' => $GANCA);
-    arsort($sortgoals);
-
-    #Calculating THE TIMES THAT TEAM WENT ==EQUALED== !
-    $sortemp = array('MOROCCO' => $EMPM , 'CROATIA' => $EMPCE, 'BELGIUM' => $EMPB, 'CANADA' => $EMPCA);
-    arsort($sortemp);
-
-    #Calculating MATCHES THAT TEAM ==LOST== !
-    $sortper = array('MOROCCO' => $PERM , 'CROATIA' => $PERCE, 'BELGIUM' => $PERB, 'CANADA' => $PERCA);
-    asort($sortper);
-
-    #Calculating GOALS THAT TEAM ==MARKED== !
-    $sortgf = array('MOROCCO' => $GFM , 'CROATIA' => $GFCE, 'BELGIUM' => $GFB, 'CANADA' => $GFCA);
-    arsort($sortgf);
-
-    #Calculating GOALS MARKED ON THAT TEAM!
-    $sortgs = array('MOROCCO' => $GSM , 'CROATIA' => $GSCE, 'BELGIUM' => $GSB, 'CANADA' => $GSCA);
-    $arraylength = count(array_keys($sortteams));
-*/
-    $sortteamB = $PTSB;
-    $sortteamM = $PTSM;
-    $sortteamCE = $PTSCE;
-    $sortteamCA = $PTSCA;
-
+    /* The difference between the goals scored and the goals scored on this team. */
     $PMM = $GFM - $GFM;
     $PMB = $GFB - $GFB;
     $PMCE = $GFCE - $GFCE;
     $PMCA = $GFCA - $GFCE;
 
-    
-
-    $points = array($PTSM, $PTSCE , $PTSCA, $PTSB);
-
-    $gf = array($GFM, $GFCE , $GFCA, $GFB);
-
+    /* The difference between the goals scored and the goals scored on this team. */
     $pm = array($PMM, $PMCE , $PMCA, $PMB);
 
+    
+    /* Points that team got after playing 3 matches. */
+    $points = array($PTSM, $PTSCE , $PTSCA, $PTSB);
+
+    /* The goals which a team has scored. */
+    $gf = array($GFM, $GFCE , $GFCA, $GFB);
+
+    /* The matches which a team has won. */
     $gan = array($GANM, $GANCE , $GANCA, $GANB);
 
-    $sortit = array($sortteamM, $sortteamCE, $sortteamCA,$sortteamB);
 
+    /* Sort the teams according to thier points */
+    $sortit = array($PTSM, $PTSCE, $PTSCA,$PTSB);
 
-
+    /* cheaking if there is an equality in points. if there is, we depend on 'GAN' the times that team won*/
     for($j=0; $j < 4; $j++){
         for($z=($j+1); $z<4;  $z++){
                 if(($points)[$j] == ($points)[$z]){
@@ -287,6 +264,7 @@
         }
     }
 
+    /* cheaking if there is an equality in the times that team won. if there is, we depend on 'G.F.' the times that team scored*/
     for($y=0; $y < 4; $y++){
         for($k=($y+1); $k<4;  $k++){
                 if(($gan)[$y] == ($gan)[$k]){
@@ -298,6 +276,7 @@
         }
     }
 
+    /* cheaking if there is an equality in the times that team scored. if there is, we depend on '+/-' the diffrence between 'G.F.' and 'G.S.'*/
     for($y=0; $y < 4; $y++){
         for($k=($y+1); $k<4;  $k++){
                 if(($gan)[$y] == ($gan)[$k]){
@@ -309,11 +288,8 @@
         }
     }
 
-    
 
-
-
-
+    /* Sorting the array after calculating all supposed cases*/
     $teams = array (
         $sortit[0] => array('MOROCCO', $PTSM, $GANM,$EMPM,$PERM,$GFM,$GSM,$PMM),
         $sortit[1] => array('CROATIA', $PTSCE, $GANCE,$EMPCE,$PERCE,$GFCE,$GSCE,$PMCE),
@@ -321,55 +297,11 @@
         $sortit[3] => array('BELGIUM', $PTSB, $GANB,$EMPB,$PERB,$GFB,$GSB,$PMB),
     );    
     krsort($teams);
-
-
-    
-  /*  
-    #Sort GOALS MARKED ON THAT TEAM without using Sort Function!
-    for($i=0; $i<4;$i++){
-        for($a=0; $a<4;$a++){
-            if(array_keys($sortteams)[$i] == array_keys($sortgs)[$a]){
-                array_values($sortgs)[$i] = array_values($sortgs)[$a];
-                array_keys($sortgs)[$i] = array_keys($sortgs)[$a];
-                #ECHO array_values($sortgs)[$a];
-
-                    if($i == 0){
-                        $GS1 = array_values($sortgs)[$a];
-                    }elseif($i == 1){
-                        $GS2 = array_values($sortgs)[$a];
-                    }elseif($i == 2){
-                        $GS3 = array_values($sortgs)[$a];
-                    }elseif($i == 3){
-                        $GS4 = array_values($sortgs)[$a];
-                    }
-            }
-        }
-    }
-
-*/
-
-
-
 }
 
 
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -603,4 +535,3 @@
 
 </body>
 </html>
-
